@@ -135,6 +135,10 @@ public class Constants {
      */
     public static final String BLANK=" ";
     /**
+     * 下划线
+     */
+    public static final String UNDERLINE="_";
+    /**
      * 中文数字
      */
     public static final String[] CN_NUM = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};

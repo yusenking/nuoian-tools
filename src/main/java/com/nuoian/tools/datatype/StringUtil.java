@@ -12,7 +12,7 @@ import sun.misc.BASE64Encoder;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -327,5 +327,130 @@ public class StringUtil {
             e.printStackTrace();
         }
         return hanyupinyin.toString();
+    }
+
+    /**
+     * 功能描述:
+     * 〈将驼峰命名转换为大写下划线命名〉
+     * @param name 字符串
+     * @return: java.lang.String
+     * @author: 吴宇森
+     * @date: 2022/2/16 19:17
+     */
+    public static String underscoreName(String name) {
+        StringBuilder result = new StringBuilder();
+        if (isBlank(name)) {
+            // 将第一个字符处理成大写
+            result.append(name.substring(Constants.NUMBER_0, Constants.NUMBER_1).toUpperCase());
+            // 循环处理其余字符
+            for (int i = Constants.NUMBER_1; i < name.length(); i++) {
+                String s = name.substring(i, i + Constants.NUMBER_1);
+                // 在大写字母前添加下划线
+                if (s.equals(s.toUpperCase()) && !Character.isDigit(s.charAt(Constants.NUMBER_0))) {
+                    result.append(Constants.UNDERLINE);
+                }
+                // 其他字符直接转成大写
+                result.append(s.toUpperCase());
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * 功能描述:
+     * 〈将大写下划线名称转换为驼峰命名〉
+     * @param name 字符串
+     * @return: java.lang.String
+     * @author: 吴宇森
+     * @date: 2022/2/16 19:18
+     */
+    public static String camelName(String name) {
+        StringBuilder result = new StringBuilder();
+        // 快速检查
+        if (isBlank(name)) {
+            // 没必要转换
+            return null;
+        } else if (!contains(name,Constants.UNDERLINE)) {
+            // 不含下划线，仅将首字母小写
+            return name.substring(Constants.NUMBER_0, Constants.NUMBER_1).toLowerCase() + name.substring(Constants.NUMBER_1);
+        }
+        // 用下划线将原始字符串分割
+        String[] camels = name.split(Constants.UNDERLINE);
+        for (String camel :  camels) {
+            // 跳过原始字符串中开头、结尾的下换线或双重下划线
+            if (isBlank(camel)) {
+                continue;
+            }
+            // 处理真正的驼峰片段
+            if (result.length() == Constants.NUMBER_0) {
+                // 第一个驼峰片段，全部字母都小写
+                result.append(camel.toLowerCase());
+            } else {
+                // 其他的驼峰片段，首字母大写
+                result.append(camel.substring(Constants.NUMBER_0, Constants.NUMBER_1).toUpperCase());
+                result.append(camel.substring(Constants.NUMBER_1).toLowerCase());
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * 功能描述:
+     * 〈字符串根据符号切割返回集合〉
+     * @param str 字符串
+     * @param symbol 符号
+     * @return: java.util.List<java.lang.String>
+     * @author: 吴宇森
+     * @date: 2022/2/16 19:22
+     */
+    public static List<String> stringToList(String str,String symbol){
+        if(isBlank(str)){
+            return null;
+        }
+        String[] params = str.split(symbol);
+        return new ArrayList<>(Arrays.asList(params));
+    }
+
+    /**
+     * 功能描述:
+     * 〈字符串列表根据符号转换成字符串〉
+     * @param list 字符串列表
+     * @param symbol 符号
+     * @return: java.lang.String
+     * @author: 吴宇森
+     * @date: 2022/2/16 19:24
+     */
+    public static String listToString(List<String> list,String symbol){
+        return String.join(symbol, list);
+    }
+
+    /**
+     * 功能描述:
+     * 〈生成8位UUID〉
+     * @return: java.lang.String
+     * @author: 吴宇森
+     * @date: 2022/2/16 19:25
+     */
+    public static String randomUuid8() {
+        char [] chars=Constants.LETTER_NUMBER.toCharArray();
+        StringBuilder shortBuffer = new StringBuilder();
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        for (int i = 0; i < 8; i++) {
+            String str = uuid.substring(i * 4, i * 4 + 4);
+            int x = Integer.parseInt(str, 16);
+            shortBuffer.append(chars[x % 0x3E]);
+        }
+        return shortBuffer.toString();
+    }
+
+    /**
+     * 功能描述:
+     * 〈生成32位UUID〉
+     * @return: java.lang.String
+     * @author: 吴宇森
+     * @date: 2022/2/16 19:25
+     */
+    public static String randomUuid32(){
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
