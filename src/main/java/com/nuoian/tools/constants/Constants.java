@@ -1,5 +1,7 @@
 package com.nuoian.tools.constants;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * @Author: 吴宇森
  * @Date: 2022/2/16 13:44
@@ -80,6 +82,11 @@ public class Constants {
      * 数字1000
      */
     public static final Integer NUMBER_1000 = 1000;
+
+    /**
+     * 数字1024
+     */
+    public static final Integer NUMBER_1024 = 1024;
     /**
      * 1小时毫秒数
      */
@@ -88,6 +95,10 @@ public class Constants {
      * 字符集名称
      */
     public static final String CHARSET_NAME="UTF-8";
+
+    public static final String CHARSET_UTF_OPTS="OPTS UTF8";
+
+    public static final String ON="ON";
     /**
      * 算法
      */
@@ -155,4 +166,5 @@ public class Constants {
      * 特殊字符：点
      */
     public static final String CN_POINT = "点";
+
 }

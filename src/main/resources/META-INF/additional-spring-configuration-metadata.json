@@ -1,0 +1,64 @@
+{
+  "properties": [
+    {
+      "name": "nuoian.file.visit-path",
+      "type": "java.lang.String",
+      "description": "文件访问域名."
+    },
+    {
+      "name": "nuoian.file.ftp.user",
+      "type": "java.lang.String",
+      "description": "FTP 账户名."
+    },
+    {
+      "name": "nuoian.file.ftp.password",
+      "type": "java.lang.String",
+      "description": "FTP 密码."
+    },
+    {
+      "name": "nuoian.file.ftp.host",
+      "type": "java.lang.String",
+      "description": "FTP 地址."
+    },
+    {
+      "name": "nuoian.file.ftp.port",
+      "type": "java.lang.Integer",
+      "description": "FTP 端口."
+    },
+    {
+      "name": "nuoian.thread.core-pool-size",
+      "type": "java.lang.Integer",
+      "description": "线程池配置 核心线程数."
+    },
+    {
+      "name": "nuoian.thread.max-pool-size",
+      "type": "java.lang.Integer",
+      "description": "线程池配置 最大线程数."
+    },
+    {
+      "name": "nuoian.thread.queue-capacity",
+      "type": "java.lang.Integer",
+      "description": "线程池配置 队列大小."
+    },
+    {
+      "name": "nuoian.thread.keep-alive-seconds",
+      "type": "java.lang.Integer",
+      "description": "线程池配置 线程保持活力时间."
+    },
+    {
+      "name": "nuoian.thread.await-termination-seconds",
+      "type": "java.lang.Integer",
+      "description": "线程池配置 等待结束时间."
+    },
+    {
+      "name": "nuoian.thread.thread-name-prefix",
+      "type": "java.lang.Integer",
+      "description": "线程池配置 线程前缀名."
+    },
+    {
+      "name": "nuoian.thread.wait-for-tasks-to-complete-on-shutdown",
+      "type": "java.lang.Boolean",
+      "description": "线程池配置 线程关闭时等待任务完成."
+    }
+  ]
+}
