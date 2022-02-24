@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @Package: com.nuoian.tools.context
  * @Version: 1.0
  */
-@Configuration
+@Component
 @ConfigurationProperties(
         prefix = "nuoian.thread"
 )

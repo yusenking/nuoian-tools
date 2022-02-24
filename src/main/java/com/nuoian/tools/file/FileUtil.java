@@ -37,30 +37,9 @@ import java.util.List;
 @Component
 public class FileUtil {
     private final FileProperties fileProperties;
-
-    private String FTP_USER;
-
-    private String FTP_PASSWORD;
-
-    private String FTP_HOST;
-
-    private Integer FTP_PORT;
-
-    private String FILE_VISIT_PATH;
-
     public FileUtil(FileProperties fileProperties) {
         this.fileProperties = fileProperties;
     }
-
-    @PostConstruct
-    public void initProperties(){
-        FTP_USER= fileProperties.getFtp().getUser();
-        FTP_PASSWORD=fileProperties.getFtp().getPassword();
-        FTP_HOST=fileProperties.getFtp().getHost();
-        FTP_PORT=fileProperties.getFtp().getPort();
-        FILE_VISIT_PATH=fileProperties.getVisitPath();
-    }
-
     /**
      * 上传文件
      *
@@ -211,8 +190,8 @@ public class FileUtil {
             }
             log.info("文件大小：" + file.getSize());
             FTPClient ftp = new FTPClient();
-            ftp.connect(FTP_HOST, FTP_PORT);
-            ftp.login(FTP_USER, FTP_PASSWORD);
+            ftp.connect(fileProperties.getFtp().getHost(), fileProperties.getFtp().getPort());
+            ftp.login(fileProperties.getFtp().getUser(), fileProperties.getFtp().getPassword());
             int code = ftp.getReplyCode();
             if (FTPReply.isPositiveCompletion(code)) {
                 String LOCAL_CHARSET = "GBK";
@@ -253,7 +232,7 @@ public class FileUtil {
                     bis.close();
                     ftp.logout();
                     //拼接文件访问路径
-                    return FILE_VISIT_PATH + wjj + fileName;
+                    return fileProperties.getVisitPath() + wjj + fileName;
                 }
                 bis.close();
                 ftp.logout();
@@ -284,8 +263,8 @@ public class FileUtil {
                 return null;
             }
             FTPClient ftp = new FTPClient();
-            ftp.connect(FTP_HOST, FTP_PORT);
-            ftp.login(FTP_USER, FTP_PASSWORD);
+            ftp.connect(fileProperties.getFtp().getHost(), fileProperties.getFtp().getPort());
+            ftp.login(fileProperties.getFtp().getUser(), fileProperties.getFtp().getPassword());
             int code = ftp.getReplyCode();
             if(FTPReply.isPositiveCompletion(code)) {
                 String LOCAL_CHARSET = "GBK";
