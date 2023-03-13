@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>nuoian-tools</artifactId>
+        <groupId>com.nuoian</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>nuoian-common</artifactId>
+    <packaging>pom</packaging>
+    <description>nuoian-common 公用模块</description>
+
+    <modules>
+        <module>nuoian-common-database</module>
+        <module>nuoian-common-redis</module>
+        <module>nuoian-common-utils</module>
+        <module>nuoian-common-monitor</module>
+        <module>nuoian-common-thread</module>
+        <module>nuoian-common-poi</module>
+        <module>nuoian-common-xxljob</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+</project>
