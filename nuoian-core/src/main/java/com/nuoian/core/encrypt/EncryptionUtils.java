@@ -151,7 +151,7 @@ public class EncryptionUtils {
 
     /**
      * 功能描述:
-     * 〈Md5加盐加密(原访客系统加密方式)〉
+     * 〈Md5加盐加密〉
      *
      * @param password 密码
      * @param salt     盐值
@@ -166,10 +166,12 @@ public class EncryptionUtils {
     }
 
     /**
-     * MD5加密
-     *
+     * 功能描述:
+     * 〈MD5加密〉
      * @param message 要进行MD5加密的字符串
-     * @return 加密结果为32位字符串
+     * @return java.lang.String 加密结果为32位字符串
+     * @author 吴宇森
+     * @date 2023/4/12 14:33
      */
     public static String encrytMd5(String message) {
         MessageDigest messageDigest;
@@ -222,6 +224,7 @@ public class EncryptionUtils {
         }
         return null;
     }
+
     /**
      * 功能描述:
      * 〈解密字符串〉

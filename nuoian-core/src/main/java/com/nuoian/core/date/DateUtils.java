@@ -36,6 +36,8 @@ public class DateUtils {
     public static final String MMDD = "MM-dd";
     public static final String MMDDYYYY_HHMM2 = "yyyyMMdd_HH:mm";
     public static final String RETURN_FORMAT = "yyyy年MM月dd日";
+    public static JSONObject QUARTER_MONTH_RELATION = JSONObject.parseObject("{\"1\":1,\"2\":1,\"3\":1,\"4\":2,\"5\":2,\"6\":2,\"7\":3,\"8\":3,\"9\":3,\"10\":4,\"11\":4,\"12\":4}");
+    public static int[][] MONTH_QUARTER_RELATION = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
 
     public static DateFormat getDateFormat(String format) {
         return new SimpleDateFormat(format);
@@ -78,14 +80,24 @@ public class DateUtils {
     }
 
     /**
-     * 格式化日期
+     * 功能描述:
+     * 〈格式化日期〉
+     * @param timestamp 时间戳
+     * @return java.lang.String
+     * @author 吴宇森
+     * @date 2023/4/12 13:40
      */
     public static String formatDate(long timestamp) {
         return getDateFormat(DATE_FORMAT).format(new Date(timestamp));
     }
 
     /**
-     * 格式化日期与时间
+     * 功能描述:
+     * 〈格式化日期与时间〉
+     * @param timestamp 时间戳
+     * @return java.lang.String
+     * @author 吴宇森
+     * @date 2023/4/12 13:40
      */
     public static String formatDatetime(long timestamp) {
         return getDateFormat(DATETIME_FORMAT).format(new Date(timestamp));
@@ -148,6 +160,24 @@ public class DateUtils {
 
     /**
      * 功能描述:
+     * 〈将时间字符串转换为对应的DateTime格式(yyyy-MM-dd HH:mm:ss)〉
+     * @param str 时间字符串
+     * @return: java.util.Date
+     * @author: 吴宇森
+     * @date: 2022/2/16 13:57
+     */
+    public static Date parseDateTime(String str) {
+        Date date = null;
+        try {
+            date = getDateFormat(DATETIME_FORMAT).parse(str);
+        } catch (ParseException e) {
+            log.warn("解析日期字符串出错！格式：yyyy-MM-dd HH:mm:ss - {}", e.getMessage(), e);
+        }
+        return date;
+    }
+
+    /**
+     * 功能描述:
      * 〈获取当前日期时间 yyyy-MM-dd〉
      * @return: java.util.Date
      * @author: 吴宇森
@@ -155,6 +185,17 @@ public class DateUtils {
      */
     public static String getCurrentDate() {
         return getDateFormat(DATE_FORMAT).format(new Date());
+    }
+
+    /**
+     * 功能描述:
+     * 〈获取当前日期时间 yyyy-MM-dd〉
+     * @return: java.util.Date
+     * @author: 吴宇森
+     * @date: 2022/2/16 13:48
+     */
+    public static String getCurrentDateTime() {
+        return getDateFormat(DATETIME_FORMAT).format(new Date());
     }
 
     /**
@@ -178,17 +219,6 @@ public class DateUtils {
 
     /**
      * 功能描述:
-     * 〈获取当前时间 HH:mm〉
-     * @return: java.util.Date
-     * @author: 吴宇森
-     * @date: 2022/2/16 13:48
-     */
-    public static String getCurrentTimeByHm() {
-        return getDateFormat(TIME_FORMAT_HHMM).format(new Date());
-    }
-
-    /**
-     * 功能描述:
      * 〈获取当前时间 HH:mm:ss〉
      * @return: java.util.Date
      * @author: 吴宇森
@@ -196,39 +226,6 @@ public class DateUtils {
      */
     public static String getCurrentTime() {
         return getDateFormat(TIME_FORMAT).format(new Date());
-    }
-
-    /**
-     * 功能描述:
-     * 〈获取指定日期 yyyyMM〉
-     * @return: java.util.Date
-     * @author: 吴宇森
-     * @date: 2022/2/16 13:48
-     */
-    public static String getDatetimeByYm(Date date) {
-        return getDateFormat(MMYYYY).format(date);
-    }
-
-    /**
-     * 功能描述:
-     * 〈获取指定日期 yyyy-MM〉
-     * @return: java.util.Date
-     * @author: 吴宇森
-     * @date: 2022/2/16 13:48
-     */
-    public static String getDatetimeByYM(Date date) {
-        return getDateFormat(MM_YYYY).format(date);
-    }
-
-    /**
-     * 功能描述:
-     * 〈获取指定日期 MM-dd〉
-     * @return: java.util.Date
-     * @author: 吴宇森
-     * @date: 2022/2/16 13:48
-     */
-    public static String getDatetimeByMd(Date date) {
-        return getDateFormat(MMDD).format(date);
     }
 
     /**
@@ -260,6 +257,22 @@ public class DateUtils {
         Calendar now = Calendar.getInstance();
         now.setTime(date);
         now.set(Calendar.MINUTE, now.get(Calendar.MINUTE) - minute);
+        return now.getTime();
+    }
+
+    /**
+     * 功能描述:
+     * 〈日期减去N小时〉
+     * @param date 日期
+     * @param hour 分钟
+     * @return: java.util.Date
+     * @author: 吴宇森
+     * @date: 2022/2/16 14:00
+     */
+    public static Date getDateSubtractHour(Date date, int hour) {
+        Calendar now = Calendar.getInstance();
+        now.setTime(date);
+        now.set(Calendar.MINUTE, now.get(Calendar.HOUR) - hour);
         return now.getTime();
     }
 
@@ -716,6 +729,7 @@ public class DateUtils {
      * 〈获取两个时间之间的区间日期〉
      * @param beginDate 开始时间
      * @param endDate 结束时间
+     * @param formatStr 时间格式
      * @return: java.util.List<java.lang.String>
      * @author: 吴宇森
      * @date: 2021/11/5 11:17
@@ -724,7 +738,16 @@ public class DateUtils {
         return getBetweenDateTime(beginDate,endDate,formatStr,Calendar.DATE);
     }
 
-
+    /**
+     * 功能描述:
+     * 〈获取两个时间之间的区间月份〉
+     * @param beginDate 开始时间
+     * @param endDate 结束时间
+     * @param formatStr 时间格式
+     * @return java.util.List<java.lang.String>
+     * @author 吴宇森
+     * @date 2023/4/12 13:45
+     */
     public static List<String> getBetweenYearForMonth(String beginDate,String endDate,String formatStr){
         return getBetweenDateTime(beginDate,endDate,formatStr,Calendar.MONTH);
     }
@@ -741,7 +764,6 @@ public class DateUtils {
     private static List<String> getBetweenDateTime(String beginDate,String endDate,String formatStr,int calendar){
         SimpleDateFormat format = new SimpleDateFormat(formatStr);
         List<String> betweenList = new ArrayList<String>();
-
         try{
             Calendar startDay = Calendar.getInstance();
             startDay.setTime(format.parse(beginDate));
@@ -771,56 +793,11 @@ public class DateUtils {
      * @date: 2021/4/14 15:02
      */
     public static boolean compareNowTime(String validTime) {
-        Date date1 = parseDatetime(validTime);
+        Date date1 = parseDateTime(validTime);
         Date nowDate = new Date();
         return date1.getTime() > nowDate.getTime();
     }
 
-    /**
-     * 解析日期与时间
-     */
-    public static Date parseDatetime(String str) {
-        Date date = null;
-        try {
-            date = getDateFormat(DATETIME_FORMAT).parse(str);
-        } catch (ParseException e) {
-            log.warn("解析日期字符串出错！格式：yyyy-MM-dd HH:mm:ss - {}", e.getMessage(), e);
-        }
-        return date;
-    }
-
-    /**
-     * 功能描述:
-     * 〈获取当前时间的指定时间格式〉
-     *
-     * @param str 1
-     * @return: java.lang.String
-     */
-    public static String getAppointTimeFormat(String str) {
-        SimpleDateFormat sdf = new SimpleDateFormat(str);
-        return sdf.format(new Date());
-    }
-
-    /**
-     * 格式化指定日期(格式：YMD_H:M)
-     */
-    public static String sdfYMDHMTimeByDate2(Date date) {
-        return getDateFormat(MMDDYYYY_HHMM2).format(date);
-    }
-
-    /**
-     * 在指定的时间上减几分钟
-     *
-     * @param data
-     * @param minute
-     * @return
-     */
-    public static Date reduceMinute(Date data, int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(data);
-        calendar.add(Calendar.MINUTE, -minute);
-        return calendar.getTime();
-    }
 
     /**
      * 功能描述 :
@@ -836,46 +813,11 @@ public class DateUtils {
     public static List<String> getFrontNumberDates(String format, Date date, int day) {
         List<String> allDate = new ArrayList<>();
         for (int i = 1; i < (day + 1); i++) {
-            Date d1 = getDateBefore(date, (day - i));
+            Date d1 = getDateSubtractDay(date, (day - i));
             String time = formatDate(d1.getTime(), format);
             allDate.add(time);
         }
         return allDate;
-    }
-
-    /**
-     * 获取日期前几天的日期
-     *
-     * @param d
-     * @param day
-     * @return
-     */
-    public static Date getDateBefore(Date d, int day) {
-        Calendar now = Calendar.getInstance();
-        now.setTime(d);
-        now.set(Calendar.DATE, now.get(Calendar.DATE) - day);
-        return now.getTime();
-    }
-
-    public static Date addMonthDate(Date d, int month) {
-        Calendar now = Calendar.getInstance();
-        now.setTime(d);
-        now.add(Calendar.MONTH, month);
-        return now.getTime();
-    }
-
-    /**
-     * 格式化指定日期(格式：Y-M-D H:M)
-     */
-    public static String sdfYMDHMTimeByDate(Date date) {
-        return getDateFormat(MMDDYYYY_HHMM).format(date);
-    }
-
-    /**
-     * 获取指定日期与时间
-     */
-    public static String getDatetimeByYMDHM(Date date) {
-        return getDateFormat(MMDDYYYY_HHMM).format(date);
     }
 
     /**
@@ -910,62 +852,27 @@ public class DateUtils {
     }
 
     /**
-     * 获取 +30分钟 当前日期与时间 格式 yyyyMMddHHmmss
-     *
-     * @return
+     * 功能描述:
+     * 〈判断时间是否在开始时间和结束时间之内〉
+     * @param nowTime 当前时间
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return boolean
+     * @author 吴宇森
+     * @date 2023/4/12 14:14
      */
-    public static String getAddTimeCurrentDatetime() {
-        return getDateFormat(TIME_FORMAT_YYYYMMDDHHMMSS).format(addMinute(new Date(), 30));
-    }
-
-    /**
-     * 在指定的时间上加多少分钟
-     *
-     * @param data
-     * @param minute
-     * @return
-     */
-    public static Date addMinute(Date data, int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(data);
-        calendar.add(Calendar.MINUTE, minute);
-        return calendar.getTime();
-    }
-
-    /**
-     * 获取前几月的日期
-     *
-     * @param d
-     * @param m
-     * @return
-     */
-    public static Date getMonthBefore(Date d, int m) {
-        Calendar now = Calendar.getInstance();
-        now.setTime(d);
-        now.add(Calendar.MONTH, m);
-        return now.getTime();
-    }
-
     public static boolean isEffectiveDate(Date nowTime, Date startTime, Date endTime) {
         if (nowTime.getTime() == startTime.getTime()
                 || nowTime.getTime() == endTime.getTime()) {
             return true;
         }
-
         Calendar date = Calendar.getInstance();
         date.setTime(nowTime);
-
         Calendar begin = Calendar.getInstance();
         begin.setTime(startTime);
-
         Calendar end = Calendar.getInstance();
         end.setTime(endTime);
-
-        if (date.after(begin) && date.before(end)) {
-            return true;
-        } else {
-            return false;
-        }
+        return date.after(begin) && date.before(end);
     }
 
     /**
@@ -988,26 +895,14 @@ public class DateUtils {
         return list;
     }
 
-    public static Date getDateAfterHour(Date d, int hour) {
-        Calendar now = Calendar.getInstance();
-        now.setTime(d);
-        now.set(Calendar.HOUR, now.get(Calendar.HOUR) + hour);
-        return now.getTime();
-    }
-
     /**
      * 功能描述:
-     * 〈根据指定格式获取时间字符串〉
-     *
-     * @param format 1
-     * @return: java.lang.String
-     * @author: LeiZiLin
-     * @date: 2020/11/24 15:40
+     * 〈毫秒转 HH:mm:ss〉
+     * @param time 毫秒数
+     * @return java.lang.String
+     * @author 吴宇森
+     * @date 2023/4/12 14:00
      */
-    public static String getNowTimeByFormat(String format) {
-        return getDateFormat(format).format(new Date());
-    }
-
     public static String getGapTime(long time){
         long hours = time / (1000 * 60 * 60);
         long minutes = (time-hours*(1000 * 60 * 60 ))/(1000* 60);
@@ -1084,11 +979,19 @@ public class DateUtils {
         return list;
     }
 
+    /**
+     * 功能描述:
+     * 〈〉
+     * @param date 传入时间
+     * @return java.util.List<java.lang.String>
+     * @author 吴宇森
+     * @date 2023/4/12 14:19
+     */
     public static List<String> getYearEachMonth(Date date){
-        String year=formatDate(date.getTime(),DATE_YEAR);
+        Integer year=getYear(date);
         List<String> datas=new ArrayList<>();
-        for (int i = 1; i <13 ; i++) {
-            String m=i<10?"0"+i:i+"";
+        for (int i = GlobalConstants.NUMBER_1; i <GlobalConstants.NUMBER_13 ; i++) {
+            String m=i<GlobalConstants.NUMBER_10?"0"+i:i+"";
             String data=year+"-"+m;
             datas.add(data);
         }
@@ -1097,50 +1000,14 @@ public class DateUtils {
 
     /**
      * 功能描述:
-     * 〈格式化时间〉
-     * @param date 时间
-     * @return: java.lang.String
-     * @author: LeiZiLin
-     * @date: 2022/11/18 18:21
+     * 〈获取今天和昨天的每2小时开始-结束时间段〉
+     * @return java.util.List<com.alibaba.fastjson2.JSONObject>
+     * @author 吴宇森
+     * @date 2023/4/12 13:36
      */
-    public static String formatTime(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat(DATETIME_FORMAT);
-        return sdf.format(date);
-    }
-
-    /**
-     * 获取日期后几天的日期
-     *
-     * @param d
-     * @param day
-     * @return
-     */
-    public static Date getDateAfter(Date d, int day) {
-        Calendar now = Calendar.getInstance();
-        now.setTime(d);
-        now.set(Calendar.DATE, now.get(Calendar.DATE) + day);
-        return now.getTime();
-    }
-
-    /**
-     * 获取指定日期与时间
-     */
-    public static String getDatetimeByYMDH(Date date) {
-        return getDateFormat(MMDDYYYY_HH).format(date);
-    }
-
-    /**
-     * 获取当前日期与时间 格式 yyyyMMddHHmmss
-     *
-     * @return
-     */
-    public static String getCurrentDateTime() {
-        return getDateFormat(TIME_FORMAT_YYYYMMDDHHMMSS).format(new Date());
-    }
-
-    public static List<JSONObject> getNowDayTime() {
-        String nowDate = getAppointTimeFormat(DATE_FORMAT);
-        Date d1 = getDateBefore(new Date(), 1);
+    public static List<JSONObject> getToDayAndYesterDayTime() {
+        String nowDate = getCurrentDate();
+        Date d1 = getDateSubtractDay(new Date(), 1);
         String oldDate = formatDate(d1.getTime(), DATE_FORMAT);
         List<String> times = get24Hours();
         int is = 0;
@@ -1159,6 +1026,14 @@ public class DateUtils {
         return los;
     }
 
+    /**
+     * 功能描述:
+     * 〈获取传入时间的每2小时开始-结束时间段〉
+     * @param dateTime 时间日期
+     * @return java.util.List<com.alibaba.fastjson2.JSONObject>
+     * @author 吴宇森
+     * @date 2023/4/12 13:33
+     */
     public static List<JSONObject> getDayTimeSection(String dateTime){
         List<JSONObject> res = new ArrayList<>();
         String dt=formatString(dateTime,DATE_FORMAT);
@@ -1176,6 +1051,13 @@ public class DateUtils {
         return res;
     }
 
+    /**
+     * 功能描述:
+     * 〈获取24小时数据集合  偶数时取整点  奇数时取59分59秒〉
+     * @return java.util.List<java.lang.String>
+     * @author 吴宇森
+     * @date 2023/4/12 13:30
+     */
     private static List<String> get24Hours(){
         List<String> times = new ArrayList<>();
         for (int i = 0; i < (24); i++) {
@@ -1191,5 +1073,136 @@ public class DateUtils {
             times.add(a);
         }
         return times;
+    }
+
+    /**
+     * 功能描述:
+     * 〈获取当前是第几季度〉
+     *
+     * @param date 传入时间
+     * @return java.util.Date
+     * @author 吴宇森
+     * @date 2023/4/7 9:53
+     */
+    public static int getDateQuarter(Date date) {
+        int month = getMonth(date);
+        return QUARTER_MONTH_RELATION.getIntValue(String.valueOf(month));
+    }
+
+    /**
+     * 功能描述:
+     * 〈获取季度第一天〉
+     *
+     * @param date 传入时间
+     * @return java.util.Date
+     * @author 吴宇森
+     * @date 2023/4/7 10:48
+     */
+    public static Date getFirstDayForQuarter(Date date) {
+        int[] arr = MONTH_QUARTER_RELATION[getDateQuarter(date) - 1];
+        String month = arr[0] < 10 ? "0" + arr[0] : String.valueOf(arr[0]);
+        return getFirstDayOfMonth(parseDate(formatDate(date.getTime(), "YYYY-" + month + "-dd HH:mm:ss")));
+    }
+
+    /**
+     * 功能描述:
+     * 〈获取季度最后一天〉
+     *
+     * @param date 传入时间
+     * @return java.util.Date
+     * @author 吴宇森
+     * @date 2023/4/7 10:48
+     */
+    public static Date getLastDayForQuarter(Date date) {
+        int[] arr = MONTH_QUARTER_RELATION[getDateQuarter(date) - 1];
+        String month = arr[2] < 10 ? "0" + arr[2] : String.valueOf(arr[2]);
+        return getLastDayOfMonth(parseDate(formatDate(date.getTime(), "YYYY-" + month + "-dd HH:mm:ss")));
+    }
+
+    /**
+     * 功能描述:
+     * 〈获取指定日期并转换特定格式〉
+     *
+     * @param assignDate 指定日期
+     *                   # today 今天
+     *                   # yesterday 昨天
+     *                   # monday 本周一
+     *                   # weekend 本周末
+     *                   # firstMonth 本月初
+     *                   # lastMonth 本月末
+     *                   # firstSeason 本季初
+     *                   # lastSeason 本季末
+     *                   # firstYear 本年初
+     *                   # lastYear 本年末
+     *                   # now 当前时间
+     * @param format     时间转换格式
+     * @return java.lang.String
+     * @author 吴宇森
+     * @date 2023/4/7 11:26
+     */
+    public static String getAssignDateForString(String assignDate, String format) {
+        String zero = " 00:00:00";
+        Date result;
+        Date nowDay = parseDate(getCurrentDate() + zero);
+        switch (assignDate) {
+            case "today":
+                result = nowDay;
+                break;
+            case "yesterday":
+                result = getDateAddingDay(nowDay, -1);
+                break;
+            case "monday":
+                result = getFirstDayOfWeek(nowDay);
+                break;
+            case "weekend":
+                result = getLastDayOfWeek(nowDay);
+                break;
+            case "firstMonth":
+                result = getFirstDayOfMonth(nowDay);
+                break;
+            case "lastMonth":
+                result = getLastDayOfMonth(nowDay);
+                break;
+            case "firstSeason":
+                result = getFirstDayForQuarter(nowDay);
+                break;
+            case "lastSeason":
+                result = getLastDayForQuarter(nowDay);
+                break;
+            case "firstYear":
+                result = getFirstDayOfYear(nowDay);
+                break;
+            case "lastYear":
+                result = getLastDayOfYear(nowDay);
+                break;
+            default:
+                result = getNowDateTime();
+        }
+        return formatDate(result.getTime(), format);
+    }
+
+    /**
+     * 功能描述:
+     * 〈获取指定日期并转换特定格式〉
+     *
+     * @param assignDate 指定日期
+     *                   # today 今天
+     *                   # yesterday 昨天
+     *                   # monday 本周一
+     *                   # weekend 本周末
+     *                   # firstMonth 本月初
+     *                   # lastMonth 本月末
+     *                   # firstSeason 本季初
+     *                   # lastSeason 本季末
+     *                   # firstYear 本年初
+     *                   # lastYear 本年末
+     *                   # now 当前时间
+     * @param format     时间转换格式
+     * @return java.lang.String
+     * @author 吴宇森
+     * @date 2023/4/7 11:26
+     */
+    public static Date getAssignDateForDate(String assignDate, String format) {
+        return parseDate(getAssignDateForString(assignDate, format),format);
     }
 }
